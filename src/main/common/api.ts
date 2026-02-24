@@ -60,7 +60,17 @@ class API extends DBInstance {
     // 响应 preload.js 事件
     ipcMain.on('msg-trigger', async (event, arg) => {
       const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
-      const data = await this[arg.type](arg, window, event);
+      const action = arg?.type;
+      const handler =
+        action && typeof this[action] === 'function' && this[action];
+      if (!handler) {
+        event.returnValue = {
+          code: -1,
+          msg: `unknown api action: ${String(action)}`,
+        };
+        return;
+      }
+      const data = await handler.call(this, arg, window, event);
       event.returnValue = data;
       // event.sender.send(`msg-back-${arg.type}`, data);
     });
