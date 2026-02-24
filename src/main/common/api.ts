@@ -55,12 +55,39 @@ const sanitizeInputFiles = (input: unknown): string[] => {
 const runnerInstance = runner();
 const detachInstance = detach();
 
+const blockedActions = new Set([
+  'constructor',
+  'init',
+  'setupMainWindowHooks',
+  '__EscapeKeyDown',
+  'getCurrentWindow',
+]);
+
+const isCallableAction = (instance: API, action: unknown): action is string => {
+  if (typeof action !== 'string' || !/^[a-zA-Z_$][\w$]*$/.test(action)) {
+    return false;
+  }
+  if (blockedActions.has(action)) return false;
+  return typeof (instance as Record<string, unknown>)[action] === 'function';
+};
+
 class API extends DBInstance {
   init(mainWindow: BrowserWindow) {
     // 响应 preload.js 事件
     ipcMain.on('msg-trigger', async (event, arg) => {
       const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
-      const data = await this[arg.type](arg, window, event);
+      const action = arg?.type;
+      if (!isCallableAction(this, action)) {
+        event.returnValue = {
+          code: -1,
+          msg: `unknown api action: ${String(action)}`,
+        };
+        return;
+      }
+      const handler = (this as Record<string, (...args: unknown[]) => unknown>)[
+        action
+      ];
+      const data = await handler.call(this, arg, window, event);
       event.returnValue = data;
       // event.sender.send(`msg-back-${arg.type}`, data);
     });

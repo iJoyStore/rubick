@@ -23,7 +23,29 @@ class AdapterHandler {
   // 插件源地址
   readonly registry: string;
 
-  pluginCaches = {};
+  pluginCaches: Record<string, string> = {};
+
+  private isNewerVersion(latestVersion: string, installedVersion: string) {
+    const normalize = (version: string) =>
+      version
+        .replace(/^(?:\^|~)/, '')
+        .split('-')[0]
+        .split('.')
+        .map((item) => Number(item) || 0);
+
+    const latest = normalize(latestVersion);
+    const installed = normalize(installedVersion);
+    const maxLength = Math.max(latest.length, installed.length);
+
+    for (let i = 0; i < maxLength; i += 1) {
+      const latestPart = latest[i] || 0;
+      const installedPart = installed[i] || 0;
+      if (latestPart > installedPart) return true;
+      if (latestPart < installedPart) return false;
+    }
+
+    return false;
+  }
 
   /**
    * Creates an instance of AdapterHandler.
@@ -71,14 +93,16 @@ class AdapterHandler {
 
     // 从npm源中获取依赖包的最新版本
     try {
-      const installedVersion = packageJSON.dependencies[name].replace('^', '');
+      const dependencyVersion = packageJSON?.dependencies?.[name];
+      if (typeof dependencyVersion !== 'string') return;
+      const installedVersion = dependencyVersion.replace(/^(?:\^|~)/, '');
       let latestVersion = this.pluginCaches[name];
       if (!latestVersion) {
         const { data } = await axios.get(registryUrl, { timeout: 2000 });
         latestVersion = data['dist-tags'].latest;
         this.pluginCaches[name] = latestVersion;
       }
-      if (latestVersion > installedVersion) {
+      if (this.isNewerVersion(latestVersion, installedVersion)) {
         await this.install([name], { isDev: false });
       }
     } catch (e) {
