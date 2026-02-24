@@ -27,37 +27,46 @@ jobs:
 
     # create steps
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       # step1: check out repository
       - name: Check out git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # step2: install node env
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 16.x
+          cache: 'yarn'
+          
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
+      # step3: install system dependencies (Linux only)
       - name: Install system deps
         if: matrix.os == 'ubuntu-latest'
         run: |
+          sudo apt-get update
           sudo apt-get install libxtst-dev libpng++-dev
           sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
           sudo snap install snapcraft --classic
-      # step3: yarn
+      
+      # step4: yarn
       - name: Yarn install
         run: |
           yarn
           yarn global add xvfb-maybe
           yarn global add @vue/cli@4.5.0  --frozen-lockfile --ignore-engines
+
+      # step5: build feature
       - name: Build feature
         run: |
           cd ./feature
           yarn
           npm run build
+          
+      # step6: build and release app
       - name: Build  & release app
         run: |
           npm run release

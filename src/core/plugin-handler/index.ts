@@ -28,7 +28,7 @@ class AdapterHandler {
   private isNewerVersion(latestVersion: string, installedVersion: string) {
     const normalize = (version: string) =>
       version
-        .replace(/^(?:\^|~)/, '')
+        .replace(/^\^|~/, '')
         .split('-')[0]
         .split('.')
         .map((item) => Number(item) || 0);

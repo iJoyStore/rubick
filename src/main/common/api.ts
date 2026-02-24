@@ -77,16 +77,15 @@ class API extends DBInstance {
     ipcMain.on('msg-trigger', async (event, arg) => {
       const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
       const action = arg?.type;
-      if (!isCallableAction(this, action)) {
+      const handler =
+        action && typeof this[action] === 'function' && this[action];
+      if (!handler) {
         event.returnValue = {
           code: -1,
           msg: `unknown api action: ${String(action)}`,
         };
         return;
       }
-      const handler = (this as Record<string, (...args: unknown[]) => unknown>)[
-        action
-      ];
       const data = await handler.call(this, arg, window, event);
       event.returnValue = data;
       // event.sender.send(`msg-back-${arg.type}`, data);
