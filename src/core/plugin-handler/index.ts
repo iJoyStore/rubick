@@ -93,7 +93,9 @@ class AdapterHandler {
 
     // 从npm源中获取依赖包的最新版本
     try {
-      const installedVersion = packageJSON.dependencies[name].replace('^', '');
+      const dependencyVersion = packageJSON?.dependencies?.[name];
+      if (typeof dependencyVersion !== 'string') return;
+      const installedVersion = dependencyVersion.replace(/^(?:\^|~)/, '');
       let latestVersion = this.pluginCaches[name];
       if (!latestVersion) {
         const { data } = await axios.get(registryUrl, { timeout: 2000 });
