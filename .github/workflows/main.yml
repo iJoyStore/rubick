@@ -8,10 +8,6 @@ on:
   push:
     branches:
       - master
-
-# 给 GITHUB_TOKEN 提升权限
-permissions:
-  contents: write  # 允许写入 Release
   
 # Workflow's jobs
 jobs:
@@ -27,8 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [macos-latest, windows-2022, ubuntu-latest]
-        os: [windows-2022]
+        os: [macos-latest, windows-2022, ubuntu-latest]
 
     # create steps
     steps:
@@ -76,4 +71,4 @@ jobs:
         run: |
           npm run release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
