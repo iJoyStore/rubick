@@ -27,7 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-2022, ubuntu-latest]
+        # os: [macos-latest, windows-2022, ubuntu-latest]
+        os: [windows-2022]
 
     # create steps
     steps:
@@ -71,26 +72,8 @@ jobs:
           npm run build
           
       # step6: build and release app
-      # - name: Build  & release app
-      #   run: |
-      #     npm run release
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build/Release Electron App
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          # 如果是推送到 tag，则自动创建 Release 并上传二进制文件
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          # 针对 Node 16 的环境，有时需要禁用某些硬限制
-          max_attempts: 3
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-build
-          path: |
-            dist/*.exe
-            dist/*.dmg
-            dist/*.deb
-            dist/*.zip
+      - name: Build  & release app
+        run: |
+          npm run release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
