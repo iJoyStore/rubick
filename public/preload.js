@@ -26,6 +26,17 @@ const ipcSend = (type, data) => {
 window.rubick = {
   hooks: {},
   __event__: {},
+
+  // 安全系统 API - 使用 IPC invoke
+  system: {
+    launchApp: (action) => {
+      return ipcRenderer.invoke('msg-trigger', {
+        type: 'launchApp',
+        data: { action },
+      });
+    },
+  },
+
   // 事件
   onPluginEnter(cb) {
     typeof cb === 'function' && (window.rubick.hooks.onPluginEnter = cb);

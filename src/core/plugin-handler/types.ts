@@ -17,7 +17,7 @@ export interface AdapterHandlerOptions {
  */
 export interface AdapterInfo {
   // 插件类型
-  type: "adapter";
+  type: 'adapter';
   // 插件名称 rubick-adapter-xxx
   name: string;
   // 可读插件名称
@@ -35,4 +35,4 @@ export interface AdapterInfo {
 }
 
 // 插件运行状态
-export type AdapterStatus = "RUNNING" | "STOPED" | "ERROR";
+export type AdapterStatus = 'RUNNING' | 'STOPED' | 'ERROR';

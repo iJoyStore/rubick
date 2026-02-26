@@ -86,7 +86,10 @@ const writeWindowsBuffers = (files: string[]): boolean => {
   try {
     clipboard.writeBuffer('CF_HDROP', buildWindowsFileDropBuffer(files));
     clipboard.writeBuffer('FileNameW', buildWindowsFileListPayload(files));
-    clipboard.writeBuffer('Preferred DropEffect', buildDropEffectBuffer('copy'));
+    clipboard.writeBuffer(
+      'Preferred DropEffect',
+      buildDropEffectBuffer('copy')
+    );
     return clipboard.readBuffer('CF_HDROP').length > 0;
   } catch {
     return false;
@@ -130,4 +133,3 @@ export const copyFilesToWindowsClipboard = (files: string[]): boolean => {
   }
   return writeWindowsBuffers(normalizedFiles);
 };
-

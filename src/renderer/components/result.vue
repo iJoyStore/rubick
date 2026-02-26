@@ -12,7 +12,7 @@
       <a-row>
         <a-col
           @click="() => openPlugin(item)"
-          @contextmenu.prevent="openMenu($event,item)"
+          @contextmenu.prevent="openMenu($event, item)"
           :class="
             currentSelect === index ? 'active history-item' : 'history-item'
           "
@@ -143,7 +143,9 @@ const initMainCmdMenus = () => {
       label: '从"使用记录"中删除',
       icon: path.join(__static, 'icons', 'delete@2x.png'),
       click: () => {
-        const history = props.pluginHistory.filter((item) => item.name !== menuState.plugin.name);
+        const history = props.pluginHistory.filter(
+          (item) => item.name !== menuState.plugin.name
+        );
         emit('setPluginHistory', toRaw(history));
       },
     },

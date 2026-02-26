@@ -193,6 +193,12 @@ class AdapterHandler {
           ? modules.map((m) => `${m}@latest`)
           : modules
       );
+
+      if (cmd === 'install' || cmd === 'i') {
+        args.push('--ignore-scripts');
+        args.push('--no-package-lock');
+      }
+
       if (cmd !== 'link') {
         args = args
           .concat('--color=always')

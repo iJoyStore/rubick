@@ -20,6 +20,7 @@ import {
 } from '@/common/constans/main';
 import getCopyFiles from '@/common/utils/getCopyFiles';
 import common from '@/common/utils/commonConst';
+import SystemService from '@/main/services/SystemService';
 
 import mainInstance from '../index';
 import { runner, detach } from '../browsers';
@@ -423,6 +424,13 @@ class API extends DBInstance {
   public shellBeep() {
     shell.beep();
     return true;
+  }
+
+  public async launchApp({ data }) {
+    if (!data?.action) {
+      return { code: -1, msg: 'Missing action parameter' };
+    }
+    return SystemService.launchApp(data.action);
   }
 
   public screenCapture(arg, window) {

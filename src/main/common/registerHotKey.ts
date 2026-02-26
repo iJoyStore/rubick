@@ -86,9 +86,16 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
 
     // 注册偏好快捷键
     // 处理显示/隐藏快捷键的注册
-    const doublePressShortcuts = ['Ctrl+Ctrl', 'Option+Option', 'Shift+Shift', 'Command+Command'];
-    const isDoublePressShortcut = doublePressShortcuts.includes(config.perf.shortCut.showAndHidden);
-    
+    const doublePressShortcuts = [
+      'Ctrl+Ctrl',
+      'Option+Option',
+      'Shift+Shift',
+      'Command+Command',
+    ];
+    const isDoublePressShortcut = doublePressShortcuts.includes(
+      config.perf.shortCut.showAndHidden
+    );
+
     if (isDoublePressShortcut) {
       // 双击快捷键（如 Ctrl+Ctrl）详见 uIOhookRegister 函数实现
     } else {
@@ -116,8 +123,12 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
 
     // 添加局部快捷键监听
     mainWindow.webContents.on('before-input-event', (event, input) => {
-      if (input.key.toLowerCase() === 'w'
-        && (input.control || input.meta) && !input.alt && !input.shift) {
+      if (
+        input.key.toLowerCase() === 'w' &&
+        (input.control || input.meta) &&
+        !input.alt &&
+        !input.shift
+      ) {
         event.preventDefault();
         if (mainWindow && !mainWindow.isDestroyed()) {
           mainWindow.hide();

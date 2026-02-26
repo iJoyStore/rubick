@@ -5,7 +5,6 @@ import appSearch from '@/core/app-search';
 import { PluginHandler } from '@/core';
 import path from 'path';
 import commonConst from '@/common/utils/commonConst';
-import { exec } from 'child_process';
 import searchManager from './search';
 import optionsManager from './options';
 import {
@@ -102,7 +101,10 @@ const createPluginManager = (): any => {
     }
     if (plugin.pluginType === 'app') {
       try {
-        exec(plugin.action);
+        const result = await window.rubick.system.launchApp(plugin.action);
+        if (result && result.code === -1) {
+          message.error(result.msg || '启动应用出错，请确保启动应用存在！');
+        }
       } catch (e) {
         message.error('启动应用出错，请确保启动应用存在！');
       }
