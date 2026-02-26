@@ -54,6 +54,7 @@
 import { defineProps, defineEmits, ref } from 'vue';
 import { ipcRenderer } from 'electron';
 import { MoreOutlined } from '@ant-design/icons-vue';
+import { debounce } from 'lodash';
 
 const remote = window.require('@electron/remote');
 import localConfig from '../confOp';
@@ -76,9 +77,17 @@ const props: any = defineProps({
   clipboardFile: (() => [])(),
 });
 
+const sendSubInputChange = debounce((value: string) => {
+  if (props.currentPlugin.name) {
+    ipcRenderer.send('msg-trigger', {
+      type: 'sendSubInputChangeEvent',
+      data: { text: value },
+    });
+  }
+}, 100);
+
 const changeValue = (e) => {
-  // if (props.currentPlugin.name === 'rubick-system-feature') return;
-  targetSearch({ value: e.target.value });
+  sendSubInputChange(e.target.value);
   emit('onSearch', e);
 };
 
@@ -148,15 +157,6 @@ const checkNeedInit = (e) => {
   // 手动粘贴
   if ((ctrlKey || metaKey) && e.key === 'v') {
     emit('readClipboardContent');
-  }
-};
-
-const targetSearch = ({ value }) => {
-  if (props.currentPlugin.name) {
-    return ipcRenderer.sendSync('msg-trigger', {
-      type: 'sendSubInputChangeEvent',
-      data: { text: value },
-    });
   }
 };
 
