@@ -9,6 +9,10 @@ on:
     branches:
       - master
 
+# 给 GITHUB_TOKEN 提升权限
+permissions:
+  contents: write  # 允许写入 Release
+  
 # Workflow's jobs
 jobs:
   # job's id
