@@ -1,0 +1,5 @@
+publish:
+  provider: github
+  owner: iJoyStore
+  repo: rubick
+  releaseType: draft
