@@ -47,7 +47,7 @@ module.exports = {
         publish: [
           {
             provider: 'github',
-            owner: 'rubickCenter',
+            owner: 'iJoyStore',
             repo: 'rubick',
           },
         ],
