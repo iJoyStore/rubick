@@ -72,3 +72,5 @@ jobs:
           npm run release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_OWNER: iJoyStore        # electron-builder 会优先读这个环境变量
+          GH_REPO: rubick
